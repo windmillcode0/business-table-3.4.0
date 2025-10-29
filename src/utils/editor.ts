@@ -5,6 +5,7 @@ import {
   ColumnEditorType,
   ColumnFilterMode,
   EditableColumnEditorRegistryItem,
+  LinkCellType,
   NestedObjectEditorRegistryItem,
   NestedObjectType,
   PaginationMode,
@@ -41,6 +42,22 @@ export const getColumnConfigWithNewType = (value: ColumnConfig, type: CellType):
     }
   }
 };
+
+/**
+ * Get Column Config
+ */
+export const getColumnConfigWithNewlinkType = (value: ColumnConfig, linkType: LinkCellType): ColumnConfig => {
+  switch (linkType) {
+
+    default: {
+      return {
+        ...value,
+        linkType,
+      };
+    }
+  }
+};
+
 
 /**
  * Get Column Editor Config

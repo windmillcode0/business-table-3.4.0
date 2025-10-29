@@ -295,9 +295,10 @@ const DateTimeInput = React.forwardRef<HTMLInputElement, InputProps>(
 
       const normalizedDate = dateTimeFormat(event.currentTarget.value, { timeZone })
       const isInvalid = !isValid(normalizedDate);
+
       setInternalDate({
         value: event.currentTarget.value,
-        invalid: isInvalid,
+        invalid: isInvalid
       });
     }, []);
 

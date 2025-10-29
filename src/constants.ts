@@ -17,6 +17,7 @@ import {
   TableRequestConfig,
   ToolbarButtonsAlignment,
 } from '@/types';
+import { dateTime } from '@grafana/data';
 
 
 export const COMMON_FILE_EXTENSIONS = [
@@ -168,6 +169,10 @@ export const TEST_IDS = {
     root: createSelector('data-testid columns-editor'),
   },
   columnEditor: {
+    fieldDateTimeInputFormat: createSelector('data-testid column-editor field-date-time-input-format'),
+    fieldDateTimeOutputFormat: createSelector('data-testid column-editor field-date-time-output-format'),
+    fieldDateTimeTimeZone: createSelector('data-testid column-editor field-date-time-time-zone'),
+    
     fieldLabel: createSelector('data-testid column-editor field-label'),
     fieldType: createSelector('data-testid column-editor field-type'),
     fieldObjectId: createSelector('data-testid column-editor field-object-id'),
@@ -211,6 +216,9 @@ export const TEST_IDS = {
     fieldFileButtonVariant: createSelector('data-testid column-editor field-file-button-variant'),
     fieldFileShowPreview: createSelector('data-testid column-editor field-file-show-preview'),
     fieldFileName: createSelector('data-testid column-editor field-file-name'),
+
+    linkFieldType: createSelector('data-testid column-editor link-field-type'),
+    linkFieldTypeTooltipRowValues: createSelector('data-testid column-editor link-field-type-tooltip-row-values'),
   },
   filterValueEditor: {
     root: createSelector('data-testid filter-value-editor'),
@@ -234,6 +242,9 @@ export const TEST_IDS = {
   },
   defaultCellRenderer: {
     root: createSelector('data-testid default-cell-renderer'),
+  },
+  dateTimeCellRenderer: {
+    root: createSelector('data-testid date-time-cell-renderer'),
   },
   preformattedCellRenderer: {
     root: createSelector('data-testid preformatted-cell-renderer'),

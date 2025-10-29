@@ -165,17 +165,77 @@ export const editableColumnEditorsRegistry = createEditableColumnEditorsRegistry
             );
           }}
           value={value.manualInputIsEnabled}
-        />        
+        /> 
+        <Label>Show Seconds</Label>
+        <InlineSwitch
+          onChange={(event) => {
+            onChange(
+              cleanPayloadObject({
+                ...value,
+                showSeconds: event.currentTarget.checked,
+              })
+            );
+          }}
+          value={value.showSeconds}
+        />     
+        <Label>TimeZone</Label>
+        <Input 
+          onChange={(event) => {
+            onChange(
+              cleanPayloadObject({
+                ...value,
+                timeZone: event.target.value,
+              })
+            )
+        }}
+        value={value.timeZone}
+        />
+        <Label>Use 12 Hours</Label>
+        <InlineSwitch
+          onChange={(event) => {
+            onChange(
+              cleanPayloadObject({
+                ...value,
+                use12Hours: event.currentTarget.checked,
+              })
+            );
+          }}
+          value={value.use12Hours}
+        />  
+        <Label>Input Format</Label>
+        <Input 
+          onChange={(event) => {
+            onChange(
+              cleanPayloadObject({
+                ...value,
+                inputFormat: event.target.value,
+              })
+            )
+          }}
+          value={value.inputFormat}
+        />                   
       </>
     ),
     control: ({ value, onChange, config }) => {
+      let updatedDate: DateTime;
 
-      let updatedDate: DateTime
-      updatedDate = dateTime(value ? (value as string) : undefined, config.inputFormat)
+      if (value) {
+        if (typeof value === 'number') {
+          updatedDate = dateTime(value);
+        } else if (typeof value === 'string' && config.inputFormat) {
+          updatedDate = dateTime(value, config.inputFormat);
+        } else {
+          updatedDate = dateTime(value);
+        }
+      } else {
+        updatedDate = dateTime(undefined);
+      }
+
       const isInvalidDate = isNaN(updatedDate.toDate().getTime());
-      if (isInvalidDate) {
-
-        updatedDate = dateTime(value ? (value as string) : undefined)
+      if (isInvalidDate && value) {
+        if (typeof value === 'string') {
+          updatedDate = dateTime(value);
+        }
       }
       return (
           <DateTimePicker
@@ -189,7 +249,7 @@ export const editableColumnEditorsRegistry = createEditableColumnEditorsRegistry
             maxDate={config.max ? new Date(config.max) : undefined}
             showSeconds={config.showSeconds}
             timeZone={config.timeZone}
-            use12Hours={true}
+            use12Hours={config.use12Hours}
             disabledHours={() => {
               return Array.from({ length: 24 }, (x, i) => i).filter(
                 (minute) => !config.allowedHours.includes(minute)
@@ -217,7 +277,8 @@ export const editableColumnEditorsRegistry = createEditableColumnEditorsRegistry
       allowedHours: config.allowedHours ?? Array.from({ length: 24 }, (x, i) => i),
       allowedMinutes: config.allowedMinutes ?? Array.from({ length: 60 }, (x, i) => i),
       allowedSeconds: config.allowedSeconds ?? Array.from({ length: 60 }, (x, i) => i),
-      timeZone: config.timeZone ?? "America/New_York",
+      timeZone: config.timeZone,
+      use12Hours: config.use12Hours ?? true,
       inputFormat: config.inputFormat ?? "ddd MMMM DD, YYYY h:mmA"
     }),
   }),

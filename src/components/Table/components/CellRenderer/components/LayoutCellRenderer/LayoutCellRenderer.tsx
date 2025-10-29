@@ -42,6 +42,7 @@ export const LayoutCellRenderer: React.FC<Props> = ({ value, row, bgColor }) => 
   /**
    * Styles and Theme
    */
+  
   const theme = useTheme2();
 
   /**

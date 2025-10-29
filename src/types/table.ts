@@ -16,6 +16,17 @@ export enum CellType {
   BOOLEAN = 'boolean',
   PREFORMATTED = 'preformatted',
   JSON = 'json',
+  DATETIME = 'datetime',
+}
+
+/**
+ * Link Cell Type
+ */
+export enum LinkCellType {
+  NONE = 'none',
+  TOOLTIP = 'tooltip',
+  MODAL = 'modal',
+  URL = 'url',
 }
 
 /**

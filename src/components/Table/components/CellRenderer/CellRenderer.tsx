@@ -14,6 +14,7 @@ import {
   MediaCellRenderer,
   PreformattedCellRenderer  
 } from './components';
+import { DateTimeCellRenderer } from '@/components/Table/components/CellRenderer/components/DateTimeCellRenderer';
 
 /**
  * Properties
@@ -87,6 +88,9 @@ export const CellRenderer: React.FC<Props> = ({ renderValue, column, panelData, 
     case CellType.PREFORMATTED: {
       return <PreformattedCellRenderer value={rawValue} field={field} config={config} bgColor={bgColor} />;
     }
+    case CellType.DATETIME: {
+      return <DateTimeCellRenderer value={rawValue} field={field} config={config} bgColor={bgColor} />;
+    }    
     default: {
       return <DefaultCellRenderer value={rawValue} field={field} config={config} bgColor={bgColor} />;
     }

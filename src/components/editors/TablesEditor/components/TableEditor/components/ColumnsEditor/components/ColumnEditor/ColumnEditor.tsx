@@ -1,9 +1,9 @@
 import { DataFrame } from '@grafana/data';
 import { getTemplateSrv } from '@grafana/runtime';
 import { BarGaugeDisplayMode, BarGaugeValueMode } from '@grafana/schema';
-import { InlineField, InlineFieldRow, InlineSwitch, Input, RadioButtonGroup, Select, StatsPicker } from '@grafana/ui';
+import { Combobox, InlineField, InlineFieldRow, InlineSwitch, Input, MultiCombobox, RadioButtonGroup, Select, StatsPicker } from '@grafana/ui';
 import { NumberInput, Slider } from '@volkovlabs/components';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { FieldsGroup } from '@/components';
 import { ColorEditor, FieldPicker } from '@/components/editors';
@@ -21,9 +21,11 @@ import {
   FileButtonSize,
   FileButtonVariant,
   ImageScale,
+  LinkCellType,
 } from '@/types';
 import {
   cleanPayloadObject,
+  getColumnConfigWithNewlinkType,
   getColumnConfigWithNewType,
   getFieldBySource,
   getFrameBySource,
@@ -113,7 +115,31 @@ const cellTypeOptions = [
     label: 'Rich text',
     description: 'HTML / Markdown',
   },
+  {
+    value: CellType.DATETIME,
+    label: 'Date Time',
+    description: 'Allows date and time formatting while preserving the value from the system/server (system values should always be in UTC)',
+  },
 ];
+
+/**
+ * Link Cell Type Options
+ */
+const linkCellTypeOptions = [
+  {
+    value: LinkCellType.NONE,
+    label: 'None',
+  },
+  {
+    value: LinkCellType.TOOLTIP,
+    label: 'Tooltip',
+  },
+  {
+    value: LinkCellType.MODAL,
+    label: 'Modal',
+  },
+]
+
 
 /**
  * Aggregation Options
@@ -304,6 +330,9 @@ const fileButtonVariantOptions = [
  * Column Editor
  */
 export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggregationAvailable, showTableHeader }) => {
+  console.log({
+    value, data
+  })
   /**
    * State
    */
@@ -357,6 +386,10 @@ export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggrega
     }
     return [];
   }, [data, value.field]);
+
+  useEffect(() => {
+    console.log(data)
+  }, [data])
 
   return (
     <>
@@ -646,6 +679,67 @@ export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggrega
             />
           </InlineField>
         )}
+        {value.type === CellType.DATETIME && (
+          <FieldsGroup label="Date Time settings">
+            <InlineField label="Input Format" grow={true} tooltip="Moment.js format string for parsing the input (e.g., YYYY-MM-DD HH:mm:ss, X for timestamp)">
+              <Input
+                value={value.dateTimeCell?.format?.inputFormat || ''}
+                onChange={(event) =>
+                  onChange({
+                    ...value,
+                    dateTimeCell: {
+                      ...value.dateTimeCell,
+                      format: {
+                        ...value.dateTimeCell?.format,
+                        inputFormat: event.currentTarget.value,
+                      },
+                    },
+                  })
+                }
+                placeholder="e.g., YYYY-MM-DD HH:mm:ss, X"
+                {...TEST_IDS.columnEditor.fieldDateTimeInputFormat.apply()}
+              />
+            </InlineField>
+            <InlineField label="Output Format" grow={true} tooltip="Moment.js format string for display (e.g., YYYY-MM-DD HH:mm:ss, ddd MMMM DD, YYYY h:mmA)">
+              <Input
+                value={value.dateTimeCell?.format?.outputFormat || ''}
+                onChange={(event) =>
+                  onChange({
+                    ...value,
+                    dateTimeCell: {
+                      ...value.dateTimeCell,
+                      format: {
+                        ...value.dateTimeCell?.format,
+                        outputFormat: event.currentTarget.value,
+                      },
+                    },
+                  })
+                }
+                placeholder="e.g., YYYY-MM-DD HH:mm:ss"
+                {...TEST_IDS.columnEditor.fieldDateTimeOutputFormat.apply()}
+              />
+            </InlineField>
+            <InlineField label="Output Time Zone" grow={true} tooltip="Optional time zone. (e.g., UTC, Europe/Berlin)">
+              <Input
+                value={value.dateTimeCell?.format?.timeZone || ''}
+                onChange={(event) =>
+                  onChange({
+                    ...value,
+                    dateTimeCell: {
+                      ...value.dateTimeCell,
+                      format: {
+                        ...value.dateTimeCell?.format,
+                        timeZone: event.currentTarget.value,
+                      },
+                    },
+                  })
+                }
+                placeholder="e.g., UTC"
+                {...TEST_IDS.columnEditor.fieldDateTimeTimeZone.apply()}
+              />
+            </InlineField>
+          </FieldsGroup>
+        )}
       </FieldsGroup>
       {showTableHeader && (
         <FieldsGroup label="Header">
@@ -754,6 +848,51 @@ export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggrega
           </InlineFieldRow>
         </FieldsGroup>
       )}
+      <FieldsGroup label="Link Settings">
+        <InlineField label="Type" grow={true}>
+          <Combobox
+            options={linkCellTypeOptions}
+            value={value.linkType}
+            onChange={(event) => {
+              onChange(getColumnConfigWithNewlinkType(value, event.value!));
+            }}
+            {...TEST_IDS.columnEditor.linkFieldType.apply()}
+          />
+        </InlineField>
+        {value.linkType === LinkCellType.TOOLTIP && (
+          <InlineField label="Row Values To Display" >
+            {/* TODO figure out how to make the dataframe fieldsource data comptablie with what combobox expects */}
+            <MultiCombobox
+              // value={value.linkTypeTooltipSettings.rowValuesToDisplay.map((item) => ({ label: item.name, value: item.name }))}
+              data={data}
+              onChange={(field) => {
+                console.log(field)
+                return
+                let rowValuesToDisplay = value.linkTypeTooltipSettings.rowValuesToDisplay;
+                if (!rowValuesToDisplay) {
+                  rowValuesToDisplay = [];
+                }
+                else {
+                  rowValuesToDisplay = rowValuesToDisplay.filter((item) => item !== field);
+                  rowValuesToDisplay.push(field);
+                }
+                onChange({
+                  ...value,
+                  linkTypeTooltipSettings: {
+                    ...value.linkTypeTooltipSettings,
+                    rowValuesToDisplay
+                  }
+                })
+              }}
+              // value={value.linkType}
+              // onChange={(event) => {
+              //   onChange(getColumnConfigWithNewlinkType(value, event.value!));
+              // }}
+              {...TEST_IDS.columnEditor.linkFieldTypeTooltipRowValues.apply()}
+            />
+          </InlineField>
+        )}
+      </FieldsGroup>
       <FieldsGroup label="Width">
         <InlineFieldRow>
           <InlineField label="Auto">

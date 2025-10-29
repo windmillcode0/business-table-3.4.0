@@ -1,5 +1,5 @@
 import { Field } from '@grafana/data';
-import { BarGaugeDisplayMode, BarGaugeValueMode } from '@grafana/schema';
+import { BarGaugeDisplayMode, BarGaugeValueMode, TimeZone } from '@grafana/schema';
 import { IconName } from '@grafana/ui';
 
 import { ColumnEditorConfig, ColumnEditorControlOptions } from './column-editor';
@@ -15,6 +15,7 @@ import {
   ColumnFilterValue,
   ColumnHeaderFontSize,
   ImageScale,
+  LinkCellType,
   OpenColumnManagerMode,
 } from './table';
 
@@ -295,6 +296,14 @@ export interface FileConfig {
   fileName?: FieldSource;
 }
 
+export interface DateTimeConfig {
+  format?: {
+    inputFormat?: string;
+    outputFormat?: string;
+    timeZone?: TimeZone
+  };
+}
+
 /**
  * Column Config
  */
@@ -333,6 +342,21 @@ export interface ColumnConfig {
    * @type {CellType}
    */
   type: CellType;
+
+  /**
+   * Link Type
+   *
+   * @type {LinkCellType}
+   */
+  linkType: LinkCellType;
+
+  /**
+   * Link Type Tooltip Settings
+   *
+   */
+  linkTypeTooltipSettings: {
+    rowValuesToDisplay: FieldSource[]
+  }
 
   /**
    * Object ID
@@ -439,6 +463,8 @@ export interface ColumnConfig {
    * @type {number}
    */
   showingRows: number;
+
+  dateTimeCell: DateTimeConfig
 }
 
 /**
@@ -944,10 +970,10 @@ export interface PanelOptions {
  */
 export type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends Array<infer U>
-    ? Array<RecursivePartial<U>>
-    : T[P] extends object | undefined
-      ? RecursivePartial<T[P]>
-      : T[P];
+  ? Array<RecursivePartial<U>>
+  : T[P] extends object | undefined
+  ? RecursivePartial<T[P]>
+  : T[P];
 };
 
 /**

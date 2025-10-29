@@ -23,6 +23,7 @@ import {
   FileButtonSize,
   FileButtonVariant,
   ImageScale,
+  LinkCellType,
 } from '@/types';
 import { getFieldKey, reorder } from '@/utils';
 
@@ -126,6 +127,10 @@ export const ColumnsEditor: React.FC<Props> = ({ value: items, name, onChange, d
           },
           label: '',
           type: CellType.AUTO,
+          linkType:LinkCellType.NONE,
+          linkTypeTooltipSettings: {
+            rowValuesToDisplay: []
+          },
           group: false,
           preformattedStyle: false,
           scale: ImageScale.AUTO,
