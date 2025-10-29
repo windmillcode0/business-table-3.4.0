@@ -300,7 +300,7 @@ export interface DateTimeConfig {
   format?: {
     inputFormat?: string;
     outputFormat?: string;
-    timeZone?: TimeZone
+    outputTimeZone?: TimeZone
   };
 }
 

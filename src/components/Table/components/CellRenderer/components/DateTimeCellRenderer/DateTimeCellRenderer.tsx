@@ -61,9 +61,9 @@ export const DateTimeCellRenderer: React.FC<Props> = ({ field, value, config, bg
   if (field.display) {
     const displayValue = field.display(value);
     
-    // Apply custom formatting if format configuration is provided
+    const { inputFormat, outputFormat, outputTimeZone} = config?.dateTimeCell?.format ??{};
     if (config.dateTimeCell?.format) {
-      const { inputFormat, outputFormat, timeZone } = config.dateTimeCell.format;
+      
       
       try {
         let date: Date | null = null;
@@ -94,7 +94,7 @@ export const DateTimeCellRenderer: React.FC<Props> = ({ field, value, config, bg
               // Use Grafana's dateTimeFormat for output formatting
               formattedValue = dateTimeFormat(date, { 
                 format: outputFormat, 
-                timeZone 
+                timeZone :outputTimeZone
               });
 
             }

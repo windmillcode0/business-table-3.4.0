@@ -387,9 +387,9 @@ export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggrega
     return [];
   }, [data, value.field]);
 
-  useEffect(() => {
-    console.log(data)
-  }, [data])
+  // useEffect(() => {
+  //   console.log(data)
+  // }, [data])
 
   return (
     <>
@@ -702,7 +702,7 @@ export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggrega
             </InlineField>
             <InlineField label="Output Format" grow={true} tooltip="Moment.js format string for display (e.g., YYYY-MM-DD HH:mm:ss, ddd MMMM DD, YYYY h:mmA)">
               <Input
-                value={value.dateTimeCell?.format?.outputFormat || ''}
+                value={value.dateTimeCell?.format?.outputFormat ?? ''}
                 onChange={(event) =>
                   onChange({
                     ...value,
@@ -721,7 +721,7 @@ export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggrega
             </InlineField>
             <InlineField label="Output Time Zone" grow={true} tooltip="Optional time zone. (e.g., UTC, Europe/Berlin)">
               <Input
-                value={value.dateTimeCell?.format?.timeZone || ''}
+                value={value.dateTimeCell?.format?.outputTimeZone || ''}
                 onChange={(event) =>
                   onChange({
                     ...value,
@@ -729,15 +729,16 @@ export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggrega
                       ...value.dateTimeCell,
                       format: {
                         ...value.dateTimeCell?.format,
-                        timeZone: event.currentTarget.value,
+                        outputTimeZone: event.currentTarget.value,
                       },
                     },
                   })
                 }
                 placeholder="e.g., UTC"
-                {...TEST_IDS.columnEditor.fieldDateTimeTimeZone.apply()}
+                {...TEST_IDS.columnEditor.fieldDateTimeOutputTimeZone.apply()}
               />
             </InlineField>
+          
           </FieldsGroup>
         )}
       </FieldsGroup>

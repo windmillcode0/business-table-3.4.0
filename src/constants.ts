@@ -171,7 +171,7 @@ export const TEST_IDS = {
   columnEditor: {
     fieldDateTimeInputFormat: createSelector('data-testid column-editor field-date-time-input-format'),
     fieldDateTimeOutputFormat: createSelector('data-testid column-editor field-date-time-output-format'),
-    fieldDateTimeTimeZone: createSelector('data-testid column-editor field-date-time-time-zone'),
+    fieldDateTimeOutputTimeZone: createSelector('data-testid column-editor field-date-time-output-time-zone'),
     
     fieldLabel: createSelector('data-testid column-editor field-label'),
     fieldType: createSelector('data-testid column-editor field-type'),
