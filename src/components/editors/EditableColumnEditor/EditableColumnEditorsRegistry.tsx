@@ -222,6 +222,8 @@ export const editableColumnEditorsRegistry = createEditableColumnEditorsRegistry
       if (value) {
         if (typeof value === 'number') {
           updatedDate = dateTime(value);
+        } else if (!isNaN(value)) {
+          updatedDate = dateTime(parseInt(value));
         } else if (typeof value === 'string' && config.inputFormat) {
           updatedDate = dateTime(value, config.inputFormat);
         } else {

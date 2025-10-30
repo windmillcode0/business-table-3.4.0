@@ -6,7 +6,6 @@ import React, { ReactElement } from 'react';
 import { TEST_IDS } from '@/constants';
 import { ColumnConfig } from '@/types';
 
-import { getStyles } from './DateTimeCellRenderer.styles';
 
 /**
  * Properties
@@ -54,12 +53,14 @@ export const DateTimeCellRenderer: React.FC<Props> = ({ field, value, config, bg
   let formattedValue: typeof value | ReactElement = value;
   let isInvalidDate = false;
   let isRelativeTime = false;
+  
 
   /**
    * Format date/time value based on configuration
    */
   if (field.display) {
     const displayValue = field.display(value);
+
     
     const { inputFormat, outputFormat, outputTimeZone} = config?.dateTimeCell?.format ??{};
     if (config.dateTimeCell?.format) {
@@ -68,17 +69,17 @@ export const DateTimeCellRenderer: React.FC<Props> = ({ field, value, config, bg
       try {
         let date: Date | null = null;
 
-        // Convert value to Date object using input format if specified
-        if (inputFormat) {
-          // Use Grafana's dateTime function to parse with specific format
+        debugger
+        if (inputFormat && inputFormat !== "DEFAULT" ) {
           const parsedDate = dateTime(value, inputFormat);
           if (parsedDate.isValid()) {
             date = parsedDate.toDate();
           }
         } else {
-          // No input format specified, try automatic parsing
-          if (typeof value === 'number') {
+          if (typeof value === 'number' ) {
             date = new Date(value);
+          } else if (!isNaN(value)) {
+            date = new Date(parseInt(value));
           } else if (typeof value === 'string') {
             date = new Date(value);
           }
@@ -86,60 +87,78 @@ export const DateTimeCellRenderer: React.FC<Props> = ({ field, value, config, bg
 
         if (date && !isNaN(date.getTime())) {
           if (outputFormat) {
+            let finalValue
             if (outputFormat.toLowerCase() === 'relative') {
               // Handle relative time format
-              formattedValue = getRelativeTimeString(date);
+              finalValue = getRelativeTimeString(date);
               isRelativeTime = true;
             } else {
               // Use Grafana's dateTimeFormat for output formatting
-              formattedValue = dateTimeFormat(date, { 
+              finalValue = dateTimeFormat(date, { 
                 format: outputFormat, 
                 timeZone :outputTimeZone
               });
 
             }
-          } else {
-            // No output format specified, use default display
-            formattedValue = <FormattedValueDisplay value={displayValue} />;
+            
+            renderFormatted({displayValue:{text: finalValue}});
+          } else { 
+            renderFormatted({displayValue});
           }
         } else {
-          isInvalidDate = true;
-          formattedValue = 'Invalid Date';
+          renderFormatted({displayValue});
         }
       } catch (error) {
-        // Fallback to default display on error
-        console.warn('DateTime formatting error:', error);
-        isInvalidDate = true;
-        formattedValue = 'Invalid Date';
+        // NOTICE: should I support fallback to error
+        // console.warn('DateTime formatting error:', error);
+        renderFormatted({displayValue});
+        
       }
     } else {
-      // No format configuration, use default display
-      formattedValue = <FormattedValueDisplay value={displayValue} />;
+        renderFormatted({displayValue});
     }
   }
 
+  // return (
+  //   <pre
+  //     className={cx(
+  //       styles.default,
+  //       isRelativeTime && styles.relativeTime,
+  //       isInvalidDate && styles.invalidDate,
+  //       css`
+  //         background: ${bgColor ? 'inherit' : theme.colors.background.primary};
+  //       `
+  //     )}
+  //   >
+  //     <span
+  //       {...TEST_IDS.dateTimeCellRenderer.root.apply()}
+  //       style={{
+  //         color: bgColor ? theme.colors.getContrastText(bgColor) : 'inherit',
+  //         background: bgColor ? 'inherit' : theme.colors.background.primary,
+  //       }}
+  //     >
+  //       {formattedValue}
+  //     </span>
+  //   </pre>
+  // );
+
   return (
-    <pre
-      className={cx(
-        styles.default,
-        isRelativeTime && styles.relativeTime,
-        isInvalidDate && styles.invalidDate,
-        css`
-          background: ${bgColor ? 'inherit' : theme.colors.background.primary};
-        `
-      )}
+    <span
+      {...TEST_IDS.dateTimeCellRenderer.root.apply()}
+      style={{
+        color: bgColor ? theme.colors.getContrastText(bgColor) : 'inherit',
+        background: bgColor ? 'inherit' : theme.colors.background.primary,
+      }}
     >
-      <span
-        {...TEST_IDS.dateTimeCellRenderer.root.apply()}
-        style={{
-          color: bgColor ? theme.colors.getContrastText(bgColor) : 'inherit',
-          background: bgColor ? 'inherit' : theme.colors.background.primary,
-        }}
-      >
-        {formattedValue}
-      </span>
-    </pre>
-  );
+      {formattedValue}
+    </span>
+  );  
+
+  function renderFormatted(props) {
+    let {displayValue} = props;
+    // isInvalidDate = true;
+    formattedValue = <FormattedValueDisplay value={displayValue} />;
+  }
 };
 
 /**
