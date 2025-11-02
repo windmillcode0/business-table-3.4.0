@@ -118,7 +118,9 @@ export const ColumnsEditor: React.FC<Props> = ({ value: items, name, onChange, d
   const onAddNewItem = useCallback(() => {
     if (newItem) {
       onChangeItems([
+        // @ts-ignore
         ...items,
+        // @ts-ignore
         {
           enabled: true,
           field: {

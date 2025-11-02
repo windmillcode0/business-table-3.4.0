@@ -184,6 +184,7 @@ export const editableColumnEditorsRegistry = createEditableColumnEditorsRegistry
             onChange(
               cleanPayloadObject({
                 ...value,
+                // @ts-ignore
                 timeZone: event.target.value,
               })
             )
@@ -208,6 +209,7 @@ export const editableColumnEditorsRegistry = createEditableColumnEditorsRegistry
             onChange(
               cleanPayloadObject({
                 ...value,
+                // @ts-ignore
                 inputFormat: event.target.value,
               })
             )

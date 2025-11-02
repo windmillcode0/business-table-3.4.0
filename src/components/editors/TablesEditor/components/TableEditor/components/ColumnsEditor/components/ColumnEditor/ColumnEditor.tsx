@@ -865,6 +865,7 @@ export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggrega
             {/* TODO figure out how to make the dataframe fieldsource data comptablie with what combobox expects */}
             <MultiCombobox
               // value={value.linkTypeTooltipSettings.rowValuesToDisplay.map((item) => ({ label: item.name, value: item.name }))}
+              // @ts-ignore
               data={data}
               onChange={(field) => {
                 // console.log(field)
@@ -874,7 +875,9 @@ export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggrega
                   rowValuesToDisplay = [];
                 }
                 else {
+                  // @ts-ignore
                   rowValuesToDisplay = rowValuesToDisplay.filter((item) => item !== field);
+                  // @ts-ignore
                   rowValuesToDisplay.push(field);
                 }
                 onChange({

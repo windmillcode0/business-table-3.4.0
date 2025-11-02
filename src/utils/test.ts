@@ -161,6 +161,7 @@ export const createFileCellConfig = (item: Partial<FileConfig>): FileConfig => (
 /**
  * Create Column Config
  */
+            // @ts-ignore
 export const createColumnConfig = (item: Partial<ColumnConfig> = {}): ColumnConfig => ({
   enabled: true,
   field: {

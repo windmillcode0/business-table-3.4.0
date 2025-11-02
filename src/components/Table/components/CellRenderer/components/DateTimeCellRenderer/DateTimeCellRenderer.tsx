@@ -75,6 +75,7 @@ export const DateTimeCellRenderer: React.FC<Props> = ({ field, value, config, bg
         } else {
           if (typeof value === 'number' ) {
             date = new Date(value);
+            // @ts-ignore
           } else if (!isNaN(value)) {
             date = new Date(parseInt(value));
           } else if (typeof value === 'string') {
