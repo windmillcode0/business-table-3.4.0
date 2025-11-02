@@ -330,9 +330,9 @@ const fileButtonVariantOptions = [
  * Column Editor
  */
 export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggregationAvailable, showTableHeader }) => {
-  console.log({
-    value, data
-  })
+  // console.log({
+  //   value, data
+  // })
   /**
    * State
    */
@@ -867,7 +867,7 @@ export const ColumnEditor: React.FC<Props> = ({ value, onChange, data, isAggrega
               // value={value.linkTypeTooltipSettings.rowValuesToDisplay.map((item) => ({ label: item.name, value: item.name }))}
               data={data}
               onChange={(field) => {
-                console.log(field)
+                // console.log(field)
                 return
                 let rowValuesToDisplay = value.linkTypeTooltipSettings.rowValuesToDisplay;
                 if (!rowValuesToDisplay) {

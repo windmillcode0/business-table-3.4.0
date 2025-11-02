@@ -1,4 +1,4 @@
-import { css, cx } from '@emotion/css';
+
 import { dateTime, dateTimeFormat, Field } from '@grafana/data';
 import { FormattedValueDisplay, useTheme2 } from '@grafana/ui';
 import React, { ReactElement } from 'react';
@@ -48,11 +48,9 @@ export const DateTimeCellRenderer: React.FC<Props> = ({ field, value, config, bg
    * Styles and Theme
    */
   const theme = useTheme2();
-  const styles = getStyles(theme);
 
   let formattedValue: typeof value | ReactElement = value;
-  let isInvalidDate = false;
-  let isRelativeTime = false;
+
   
 
   /**
@@ -69,7 +67,6 @@ export const DateTimeCellRenderer: React.FC<Props> = ({ field, value, config, bg
       try {
         let date: Date | null = null;
 
-        debugger
         if (inputFormat && inputFormat !== "DEFAULT" ) {
           const parsedDate = dateTime(value, inputFormat);
           if (parsedDate.isValid()) {
@@ -91,7 +88,6 @@ export const DateTimeCellRenderer: React.FC<Props> = ({ field, value, config, bg
             if (outputFormat.toLowerCase() === 'relative') {
               // Handle relative time format
               finalValue = getRelativeTimeString(date);
-              isRelativeTime = true;
             } else {
               // Use Grafana's dateTimeFormat for output formatting
               finalValue = dateTimeFormat(date, { 
@@ -118,29 +114,6 @@ export const DateTimeCellRenderer: React.FC<Props> = ({ field, value, config, bg
         renderFormatted({displayValue});
     }
   }
-
-  // return (
-  //   <pre
-  //     className={cx(
-  //       styles.default,
-  //       isRelativeTime && styles.relativeTime,
-  //       isInvalidDate && styles.invalidDate,
-  //       css`
-  //         background: ${bgColor ? 'inherit' : theme.colors.background.primary};
-  //       `
-  //     )}
-  //   >
-  //     <span
-  //       {...TEST_IDS.dateTimeCellRenderer.root.apply()}
-  //       style={{
-  //         color: bgColor ? theme.colors.getContrastText(bgColor) : 'inherit',
-  //         background: bgColor ? 'inherit' : theme.colors.background.primary,
-  //       }}
-  //     >
-  //       {formattedValue}
-  //     </span>
-  //   </pre>
-  // );
 
   return (
     <span
